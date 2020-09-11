@@ -10,9 +10,9 @@ const gameUIE = document.querySelector("#game"),
       maxNumUIE = document.querySelector(".max-num"),
       guessBtnUIE = document.querySelector("#guess-btn"),
       guessInputUIE = document.querySelector("#guess-input"),
-      message = document.querySelector(".message");
+      messageUIE = document.querySelector(".message");
 
-//Assign UI min and max
+//Display the min and max number range in the UI
 minNumUIE.textContent = min;
 maxNumUIE.textContent = max;
 
@@ -27,24 +27,23 @@ gameUIE.addEventListener("mousedown", function(e){
 guessBtnUIE.addEventListener("click", function(){
     let guess = parseInt(guessInputUIE.value);
 
-    //Validate input
-    if(isNaN(guess) || guess < min || guess > max){
-        setMessage(`Please enter a number between ${min} and ${max}`, "red");
-    }
-
-    //Check if won
+    //Check if user won
     if(guess === winningNum){
-        //Game over (won)
+        //Game over (user won)
         gameOver(true, `${winningNum} is correct! You win!`);
+    } else if(isNaN(guess) || guess < min || guess > max){
+        //User did not input a valid number
+        setMessage(`Please enter a number between ${min} and ${max}`, "red");
+        //Clear input field for new number input
+        guessInputUIE.value = "";
     } else {
-        //Wrong number
+        //The number they put in was valid but incorrect
         guessesLeft -= 1;
 
         if(guessesLeft === 0){
-            //Game over (lost)
+            //Game over (user lost)
             gameOver(false, `Sorry, Game Over. The correct number was ${winningNum}`);
-        } else {
-            //Game continues (answer wrong)
+        } else {  //They have guesses left
             //Make border red
             guessInputUIE.style.borderColor = "red";
             //Clear input field
@@ -53,11 +52,10 @@ guessBtnUIE.addEventListener("click", function(){
             setMessage(`${guess} is not correct. ${guessesLeft} guesses left.`, "red");
         }
     }
-
 });
 
-//Game over (function code)
-function gameOver(won, msg){
+//Game has ended (function code)
+function gameOver(won, msg){  //Won is either true or false
     let color;
     won === true ? color = "green" : color = "red";
 
@@ -66,9 +64,9 @@ function gameOver(won, msg){
     //Change border color
     guessInputUIE.style.borderColor = color;
     //Set text color
-    message.style.color = color;
+    messageUIE.style.color = color;
     //Set message
-    setMessage(msg);
+    messageUIE.textContent = msg;
 
     //Play again?
     guessBtnUIE.value = "Play Again";
@@ -83,6 +81,6 @@ function getRandomNum(min, max){
 
 //Set message (function code)
 function setMessage(msg, color){
-    message.style.color = color;
-    message.textContent = msg;
+    messageUIE.style.color = color;
+    messageUIE.textContent = msg;
 }
